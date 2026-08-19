@@ -21,7 +21,6 @@ from .base_config import _BaseConfig
 
 @dataclass
 class RLOOConfig(_BaseConfig):
-    # docstyle-ignore
     r"""
     Configuration class for the [`RLOOTrainer`].
 
@@ -41,8 +40,8 @@ class RLOOConfig(_BaseConfig):
             argument of the [`RLOOTrainer`] is provided as a string.
         trust_remote_code (`bool`, *optional*, defaults to `False`):
             Whether to allow loading models and tokenizers that ship custom Python code from the Hub. Forwarded to
-            [`~transformers.AutoModelForCausalLM.from_pretrained`] and
-            [`~transformers.AutoProcessor.from_pretrained`]. Also applied to reward-model and reward-tokenizer loads.
+            [`~transformers.AutoModelForCausalLM.from_pretrained`] and [`~transformers.AutoProcessor.from_pretrained`].
+            Also applied to reward-model and reward-tokenizer loads.
         router_aux_loss_coef (`float`, *optional*, defaults to `0.001`):
             Coefficient of the load-balancing auxiliary loss. Only has an effect when training a Mixture-of-Experts
             (MoE) model; for other models it does nothing. The auxiliary loss is added to the training loss with this
@@ -168,6 +167,12 @@ class RLOOConfig(_BaseConfig):
             `transformers>=5.8.0`.
         transformers_continuous_batching_config (`dict`, *optional*):
             Keyword arguments for [`~transformers.generation.ContinuousBatchingConfig`].
+
+        > Parameters that control memory optimization
+
+        activation_offloading (`bool`, *optional*, defaults to `False`):
+            Whether to offload activations to the CPU during the forward pass to reduce peak GPU memory usage. This
+            trades memory for compute: activations are moved to CPU and fetched back during the backward pass.
 
         > Parameters that control the training
 
@@ -600,6 +605,12 @@ class RLOOConfig(_BaseConfig):
     transformers_continuous_batching_config: dict | None = field(
         default=None,
         metadata={"help": "Keyword arguments for `transformers.generation.ContinuousBatchingConfig`."},
+    )
+
+    # Parameters that control memory optimization
+    activation_offloading: bool = field(
+        default=False,
+        metadata={"help": "Whether to offload the activations to the CPU."},
     )
 
     # Deprecated parameters
